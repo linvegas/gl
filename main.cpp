@@ -41,8 +41,12 @@ int main()
         //  X,     Y,    Z
         -0.5f, -0.5f, 0.0f,
          0.5f, -0.5f, 0.0f,
-         0.5f,  0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f,
     };
+
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
     unsigned int VBO;
     glGenBuffers(1, &VBO);
@@ -68,11 +72,48 @@ int main()
         std::cerr << "ERROR::VERTEX_SHADER_COMPILATION\n" << infoLog << std::endl;
     }
 
+    const char *fragmentShaderSource = "#version 330 core\n"
+        "out vec4 FragColor;\n"
+        "void main() {\n"
+        "    FragColor = vec4(1.0f, 0.2f, 0.3f, 1.0f);\n"
+        "}\0";
+
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cerr << "ERROR::FRAGMENT_SHADER_COMPILATION\n" << infoLog << std::endl;
+    }
+
+    unsigned int shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    if (!success) {
+        glGetShaderInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cerr << "ERROR::SHADER_PROGRAM_LINK\n" << infoLog << std::endl;
+    }
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
-        glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+        glClearColor(0.1f, 0.15f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         glfwPollEvents();
         glfwSwapBuffers(window);
