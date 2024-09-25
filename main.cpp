@@ -134,6 +134,8 @@ int main()
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
 
+    float mixValue = 0.0f;
+
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
 
@@ -145,7 +147,11 @@ int main()
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
 
+        float time = glfwGetTime();
+        mixValue = sin(time) / 2 + 0.5;
+
         shader.use();
+        shader.setFloat("mixValue", mixValue);
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
