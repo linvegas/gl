@@ -1,7 +1,12 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
 #include <cmath>
+
+#include "glad/glad.h"
+
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "shader.h"
 
@@ -150,8 +155,15 @@ int main()
         float time = glfwGetTime();
         mixValue = sin(time) / 2 + 0.5;
 
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::rotate(trans, glm::radians(mixValue * 360), glm::vec3(0.0, 0.0, 1.0));
+        trans = glm::scale(trans, glm::vec3(mixValue * 1.5 + 0.5));
+
         shader.use();
         shader.setFloat("mixValue", mixValue);
+
+        unsigned  int transformLoc = glGetUniformLocation(shader.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
