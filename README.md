@@ -4,12 +4,29 @@ Exercises on graphics programming based on the [learnopengl](https://learnopengl
 
 To generate glad.c and all the include files, you need to go [here](https://glad.dav1d.de), as clarified and recommended on the book.
 
+## Dependencies
+
+- [glfw](https://www.glfw.org)
+- glm
+- make
+
 ## Setup
 
-You will need [glfw](https://www.glfw.org) installed in your system and `make` to build the program.
-
-Just run this:
+To build and run the application:
 
 ```console
 $ make
+```
+
+Only build or only run the application:
+
+```console
+$ make build
+$ make run
+```
+
+If you have an old cpu (only supports opengl bellow 3.0):
+
+```console
+$ make legacy
 ```
