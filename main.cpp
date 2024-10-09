@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 #include <vector>
 #include <cmath>
 
@@ -19,7 +20,7 @@
 #define SCR_WIDTH 800
 #define SCR_HEIGHT 600
 
-Camera camera(glm::vec3(0, 0, 3.0));
+Camera camera(glm::vec3(0, 0, 5.0));
 float lastX = SCR_WIDTH / 2;
 float lastY = SCR_HEIGHT / 2;
 
@@ -223,13 +224,24 @@ int main()
 
     float mixValue = 0.0f;
 
-    std::vector<glm::vec3> cubePositions = {
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(2.0f, 5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.5f),
-        glm::vec3(1.1f, 2.2f, -3.5f),
-    };
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(-6.0, 6.0);
+
+    std::vector<glm::vec3> cubePositions;
+
+    for (int i = 0; i < 50; i++) {
+        glm::vec3 position(dis(gen), dis(gen), dis(gen));
+        cubePositions.push_back(position);
+    }
+
+    // std::vector<glm::vec3> cubePositions = {
+    //     glm::vec3(0.0f, 0.0f, 0.0f),
+    //     glm::vec3(2.0f, 5.0f, -15.0f),
+    //     glm::vec3(-1.5f, -2.2f, -2.5f),
+    //     glm::vec3(-3.8f, -2.0f, -12.5f),
+    //     glm::vec3(1.1f, 2.2f, -3.5f),
+    // };
 
     float deltaTime = 0.0;
     float lastFrame = 0.0;
